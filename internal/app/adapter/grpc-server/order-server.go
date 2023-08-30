@@ -22,9 +22,7 @@ func (s *Server) DeployService(_ context.Context, req *pb.DeployServiceRequest) 
 
 	deployedServiceIds := make([]string, 0, len(req.ServiceIds))
 
-	for _, id := range req.ServiceIds {
-		deployedServiceIds = append(deployedServiceIds, id)
-	}
+	deployedServiceIds = append(deployedServiceIds, req.ServiceIds...)
 
 	return &pb.DeployServiceResponse{
 		ServiceIds: deployedServiceIds,

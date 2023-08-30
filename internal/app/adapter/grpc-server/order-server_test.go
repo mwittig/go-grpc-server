@@ -3,18 +3,19 @@ package grpc_server
 import (
 	"context"
 	"errors"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
-	pb "go-grpc-server/internal/app/protos/orderservice"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
-	"google.golang.org/grpc/test/bufconn"
 	"log"
 	"net"
 	"reflect"
 	"testing"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
+	pb "go-grpc-server/internal/app/protos/orderservice"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
+	"google.golang.org/grpc/test/bufconn"
 )
 
 type dialFunc func(context.Context, string) (net.Conn, error)
@@ -161,9 +162,6 @@ func evaluateReceived(t *testing.T, exp interface{}, rcv interface{}, ignoreUnex
 	}
 }
 func TestServer_DeployService(t *testing.T) {
-	type args struct {
-		req *pb.DeployServiceRequest
-	}
 	tests := []struct {
 		name     string
 		inputReq *pb.DeployServiceRequest
@@ -202,6 +200,7 @@ func TestServer_DeployService(t *testing.T) {
 			got, err := client.DeployService(context.TODO(), tc.inputReq)
 			if (err != nil) != tc.wantErr {
 				t.Errorf("DeployService() error = %v, wantErr %v", err, tc.wantErr)
+
 				return
 			}
 

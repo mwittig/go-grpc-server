@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package orderservice;
+
+option go_package = "/orderservice";
+
+
+service OrderService {
+  rpc DeployService(DeployServiceRequest) returns (DeployServiceResponse);
+}
+
+message DeployServiceRequest {
+  repeated string service_ids = 1;
+}
+
+message DeployServiceResponse {
+  repeated string service_ids = 1;
+}

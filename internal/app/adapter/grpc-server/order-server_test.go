@@ -2,6 +2,7 @@ package grpc_server
 
 import (
 	"context"
+	"encoding/base64"
 	"errors"
 	"log"
 	"net"
@@ -207,4 +208,38 @@ func TestServer_DeployService(t *testing.T) {
 			evaluateReceived(t, tc.want, got, true)
 		})
 	}
+}
+
+func FuzzServer_DeployService(f *testing.F) {
+	dial, shutdown := initMockupServer(nil)
+
+	conn, err := grpc.DialContext(context.TODO(), "",
+		grpc.WithContextDialer(dial), grpc.WithTransportCredentials(insecure.NewCredentials()))
+
+	if err != nil {
+		f.Fatal(err)
+	}
+
+	if shutdown != nil {
+		defer shutdown()
+	}
+
+	client := pb.NewOrderServiceClient(conn)
+
+	f.Fuzz(func(t *testing.T, id []byte, length uint) {
+		ids := make([]string, length)
+
+		for it := range ids {
+			ids[it] = base64.StdEncoding.EncodeToString(id)
+		}
+
+		t.Log(id, length, len(ids))
+
+		_, err := client.DeployService(context.TODO(), &pb.DeployServiceRequest{ServiceIds: ids})
+		if err != nil {
+			t.Errorf("DeployService() error = %v, wantErr %v", err, false)
+
+			return
+		}
+	})
 }
